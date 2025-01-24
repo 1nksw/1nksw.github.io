@@ -1,148 +1,193 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cookie Clicker Game</title>
+    <style>
+        /* Existing and updated styles */
+        body {
+            font-family: 'Comic Sans MS', sans-serif;
+            text-align: center;
+            background-color: #ffe6f2;
+            color: #ff69b4;
+            margin: 0;
+            padding: 0;
+        }
 
-<html lang="en"> 
+        .container {
+            margin-top: 50px;
+        }
 
-<head> 
+        #cookie {
+            width: 150px;
+            cursor: pointer;
+            transition: transform 0.1s;
+        }
 
-    <meta charset="UTF-8"> 
+        #cookie:active {
+            transform: scale(0.9);
+        }
 
-    <meta http-equiv="X-UA-Compatible" content="IE=edge"> 
+        .stats {
+            margin: 20px 0;
+            font-size: 1.5em;
+        }
 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+        .shop {
+            margin: 20px 0;
+        }
 
-    <title>Nathan's Webpage</title> 
+        .shop-item {
+            margin: 10px 0;
+        }
 
-    <style> 
+        button {
+            padding: 10px 20px;
+            font-size: 1em;
+            background-color: #ff69b4;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
 
-body {
-    font-family: 'Roboto', sans-serif;
-    background: linear-gradient(to right, #f4f4f9, #e2e2e2);
-    background: url('https://wallpapercave.com/wp/wp2394253.jpg') no-repeat center center fixed;
-            background-size: cover; /* Ensures the image covers the entire area */
-    margin: 0;
-    padding: 20px;
-    color: #333;
-}
+        button:hover {
+            background-color: #ff85c2;
+        }
 
-header {
-    background-color: #87CEEB;
-    color: white;
-    padding: 10px 0;
-    text-align: center;
-}
+        #nameInput {
+            margin: 20px 0;
+        }
 
-nav {
-    margin: 20px 0;
-    text-align: center;
-}
+        .error {
+            color: red;
+            font-size: 0.9em;
+            margin-top: 10px;
+        }
 
-nav a {
-    text-decoration: none;
-    color: #05696B;
-    margin: 0 15px;
-    font-weight: bold;
-    transition: color 0.3s;
-}
+        .message {
+            color: red;
+            font-size: 1em;
+        }
 
-nav a:hover {
-    color: #fff;
-    background-color: #05696B;
-}
+        .leaderboard {
+            margin-top: 30px;
+            background-color: #fff0f5;
+            border: 2px solid #ff69b4;
+            border-radius: 10px;
+            padding: 20px;
+            display: inline-block;
+        }
 
-main {
-    padding: 40px;
-    background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
+        .leaderboard h2 {
+            margin: 0 0 10px;
+        }
 
-footer {
-    text-align: center;
-    margin-top: 20px;
-    font-size: 0.8em;
-    color: #ffffff;
-}
-    </style> 
+        .leaderboard ol {
+            padding: 0;
+            list-style: none;
+        }
 
-</head> 
+        .leaderboard li {
+            margin: 5px 0;
+        }
 
-<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+        /* New Styles for Diamond Shop */
+        .diamond-shop {
+            background-color: #fff0f5;
+            border: 2px solid #ff69b4;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
 
+        /* Hamburger Menu */
+        .hamburger-menu {
+            position: fixed;
+            top: 0;
+            left: 0;
+            margin: 20px;
+        }
 
-<body> 
+        .hamburger-menu button {
+            background-color: #ff69b4;
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
 
- 
+        .hamburger-menu-content {
+            display: none;
+            position: absolute;
+            background-color: #ffe6f2;
+            border: 2px solid #ff69b4;
+            border-radius: 10px;
+            padding: 20px;
+            top: 50px;
+            left: 0;
+        }
 
-    <header> 
+        .hamburger-menu-content a {
+            display: block;
+            margin: 10px 0;
+            color: #ff69b4;
+            text-decoration: none;
+        }
 
-        <h1>Welcome to Nathan's Webpage</h1> 
+        .hamburger-menu-content a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Cookie Clicker</h1>
+        <div id="nameInput">
+            <input type="text" id="playerName" placeholder="Enter your name">
+            <button onclick="startGame()">Start Game</button>
+        </div>
+        <div id="game" style="display: none;">
+            <img id="cookie" src="https://via.placeholder.com/150" alt="Cookie">
+            <div class="stats">
+                <p>Cookies: <span id="cookieCount">0</span></p>
+                <p>Multiplier: x<span id="multiplier">1</span></p>
+                <p>Auto Clicks: <span id="autoClicks">0</span></p>
+                <p>Diamonds: <span id="diamondCount">0</span></p>
+            </div>
+            <div class="shop">
+                <h2>Shop</h2>
+                <div class="shop-item">
+                    <button onclick="buyMultiplier()">Buy Multiplier (Cost: <span id="multiplierCost">10</span> Cookies)</button>
+                    <div id="multiplierMessage" class="message"></div>
+                </div>
+                <div class="shop-item">
+                    <button onclick="buyAutoClicker()">Buy Auto Clicker (Cost: <span id="autoClickerCost">100</span> Cookies)</button>
+                    <div id="autoClickerMessage" class="message"></div>
+                </div>
+            </div>
+            <div class="diamond-shop">
+                <h2>Diamond Shop</h2>
+                <div class="shop-item">
+                    <button onclick="claimReward()">Claim Reward (Cost: 1000 Diamonds for 50 Robux)</button>
+                    <input type="text" id="robloxUsername" placeholder="Enter your Roblox username">
+                    <input type="text" id="gamepassLink" placeholder="Enter your Gamepass link">
+                </div>
+            </div>
+        </div>
+    </div>
 
-    </header> 
+    <!-- Hamburger Menu -->
+    <div class="hamburger-menu">
+        <button onclick="toggleHamburgerMenu()">☰</button>
+        <div class="hamburger-menu-content">
+            <a href="leaderboard.html">Leaderboard</a>
+            <a href="#">Shop</a>
+            <a href="#">Quests</a>
+        </div>
+    </div>
 
- 
-
-    <nav> 
-
-        <a href="index.html">Home</a> 
-
-        <a href="#">Placeholder</a> 
-
-        <a href="backup.html">Backup link</a> 
-
-    </nav> 
-
- 
-
-    <main> 
-
-        <h2>About This Page</h2> 
-
-        <p>This is a simple HTML webpage created as a sample for learning how to publish websites. This is for my Computer Activity but I wanted to add some pizzazz in order to appeal with my classmates (mga emelods shout out sainyo) It is a little bit buggy at the moment but soon I will edit the website.</p>
- 
-        <!-- Optional: Adding an image in the content -->
-        <img src="https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da84fa8ade154079af36c8153e9a" alt="My favorite blue character emelods" style="max-width: 100%; height: auto;" />
-         
-
-        <h3>More about me<h3>
-
-<ul>
-    <li>14 years old</li>
-    <li>Tech Geek (i think)</li>
-    <li>I love playing Roblox, Project Sekai, Cookie Run: Ovenbreak, Rhythm Hive etc.,</li>
-    <li>Mostly use Discord, FB, X.</li>
-    <li>Humihingi ng GCash upang may pang recharge sa ML</li>
-    <li>di ko alam kung saan ko nakuha kung paano ako mag code pero masaya talaga mag code</li>
-    <li>LGBTQ+ Friendly Website</li>
-</ul>
-
- <img src="https://64.media.tumblr.com/fdecd028ae69f79c5ee40ed398b7ee74/f8993016b82f0605-e8/s640x960/3ec79c9453fa920e7c7fcfdf54e19b8c82a93d4c.jpg" alt="My favorite blue character emelods" style="max-width: 100%; height: auto;" />
-         
-        <h3>Purpose of my Loving Website UwU</h3> 
-
-        <ul> 
-
-            <li>Edit and add pictures</li> 
-
-            <li>For funny purposes</li> 
-
-            <li>Para may plus rizz points kay crush</li> 
-
-        </ul> 
-<p>Anyways, miss ineffort ko talaga tong website na ito kasi gusto ko kasi computer. Anyways shout out po kung sino nag access saking link. Thank you so muc-</p>
-    </main> 
-
- 
-
-    <footer> 
-
-        &copy; 2024 Nathan Gabriel Bayoneto. All rights reserved. Parang may sariling business na ah kupal
-
-    </footer> 
-
- 
-
-</body> 
-
-</html> 
-
- 
+    <script src="cookieClicker.js"></script>
+</body>
+</html>

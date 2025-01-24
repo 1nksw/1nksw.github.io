@@ -240,6 +240,32 @@ function toggleHamburgerMenu() {
         menuContent.style.display = "block";
     }
 }
+function loadQuests() {
+    const dailyQuestContainer = document.getElementById("dailyQuests");
+    const weeklyQuestContainer = document.getElementById("weeklyQuests");
+
+    dailyQuestContainer.innerHTML = '';
+    weeklyQuestContainer.innerHTML = '';
+
+    dailyQuests.forEach(quest => {
+        const questItem = document.createElement("li");
+        questItem.textContent = `${quest.description} - Reward: ${quest.reward} diamonds`;
+        if (quest.completed) {
+            questItem.style.textDecoration = "line-through";
+        }
+        dailyQuestContainer.appendChild(questItem);
+    });
+
+    weeklyQuests.forEach(quest => {
+        const questItem = document.createElement("li");
+        questItem.textContent = `${quest.description} - Reward: ${quest.reward} diamonds`;
+        if (quest.completed) {
+            questItem.style.textDecoration = "line-through";
+        }
+        weeklyQuestContainer.appendChild(questItem);
+    });
+}
+
 // Ensure game state is saved every second to avoid data loss
 setInterval(saveGameState, 1000);
 setInterval(autoClick, 1000); // Auto clicks every second

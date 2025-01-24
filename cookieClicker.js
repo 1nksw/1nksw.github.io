@@ -35,10 +35,11 @@ document.getElementById("cookie").addEventListener("click", function () {
 
 function buyMultiplier() {
     const messageElement = document.getElementById("multiplierMessage");
+    const multiplierCost = document.getElementById("multiplierCost").innerText;
     if (cookies >= multiplierCost) {
         cookies -= multiplierCost;
         multiplier++;
-        multiplierCost = Math.floor(multiplierCost * 1.5);
+        document.getElementById("multiplierCost").innerText = Math.floor(multiplierCost * 1.5);
         messageElement.textContent = "";
         updateStats();
         updateLeaderboard();
@@ -49,10 +50,11 @@ function buyMultiplier() {
 
 function buyAutoClicker() {
     const messageElement = document.getElementById("autoClickerMessage");
+    const autoClickerCost = document.getElementById("autoClickerCost").innerText;
     if (cookies >= autoClickerCost) {
         cookies -= autoClickerCost;
         autoClicks++;
-        autoClickerCost = Math.floor(autoClickerCost * 2);
+        document.getElementById("autoClickerCost").innerText = Math.floor(autoClickerCost * 2);
         messageElement.textContent = "";
         updateStats();
         updateLeaderboard();
@@ -85,4 +87,66 @@ function dailyLogin() {
 }
 
 function claimReward() {
-[_{{{CITATION{{{_1{](https://github.com/RyanMichaelNasalinas/PHP_Cheat_Sheet/tree/1552294aaa4820206fcc61a004128ec5c2aba7ba/Lesson3%2Fcookie_test.php)
+    const robloxUsername = document.getElementById('robloxUsername').value;
+    const gamepassLink = document.getElementById('gamepassLink').value;
+
+    if (robloxUsername && gamepassLink && diamonds >= 1000) {
+        diamonds -= 1000;
+        updateStats();
+
+        // Webhook message
+        const webhookUrl = 'YOUR_DISCORD_WEBHOOK_URL';
+        const message = {
+            content: `${robloxUsername} has claimed a reward!`,
+            embeds: [{
+                title: "Reward Claimed",
+                description: `Roblox Username: ${robloxUsername}\nGamepass Link: ${gamepassLink}`,
+                color: 65280  // green color
+            }]
+        };
+
+        fetch(webhookUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(message)
+        }).then(response => console.log('Webhook message sent'))
+        .catch(error => console.error('Error sending webhook message:', error));
+    } else {
+        alert('Please enter valid information and ensure you have enough diamonds.');
+    }
+}
+
+function updateLeaderboard() {
+    const playerName = localStorage.getItem("playerName");
+    const playerIndex = leaderboard.findIndex(player => player.name === playerName);
+
+    if (playerIndex > -1) {
+        leaderboard[playerIndex].score = Math.floor(cookies);
+    } else {
+        leaderboard.push({ name: playerName, score: Math.floor(cookies) });
+    }
+
+    leaderboard.sort((a, b) => b.score - a.score);
+    localStorage.setItem("leaderboard", JSON.stringify(leaderboard));
+
+    const leaderboardList = document.getElementById("leaderboardList");
+    if (leaderboardList) {
+        leaderboardList.innerHTML = "";
+        leaderboard.forEach(player => {
+            const listItem = document.createElement("li");
+            listItem.textContent = `${player.name}: ${player.score} cookies`;
+            leaderboardList.appendChild(listItem);
+        });
+    }
+}
+
+function toggleHamburgerMenu() {
+    const menuContent = document.querySelector(".hamburger-menu-content");
+    if (menuContent.style.display === "block") {
+        menuContent.style.display = "none";
+    } else {
+        menuContent.style.display = "block";
+    }
+}
+
+setInterval(autoClick, 1000); // Auto clicks every second

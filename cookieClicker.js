@@ -1,3 +1,88 @@
+// Login and Signup Functions
+function showSignup() {
+    document.getElementById('formContainer').style.display = 'none';
+    document.getElementById('signupContainer').style.display = 'block';
+}
+
+function showLogin() {
+    document.getElementById('formContainer').style.display = 'block';
+    document.getElementById('signupContainer').style.display = 'none';
+}
+
+function signup() {
+    const username = document.getElementById('signupUsername').value.trim();
+    const password = document.getElementById('signupPassword').value.trim();
+    const signupError = document.getElementById('signupError');
+
+    if (!username || !password) {
+        signupError.textContent = "Please fill in both fields.";
+        return;
+    }
+
+    const users = JSON.parse(localStorage.getItem('users')) || {};
+    if (users[username]) {
+        signupError.textContent = "Username already exists.";
+        return;
+    }
+
+    users[username] = password;
+    localStorage.setItem('users', JSON.stringify(users));
+    alert('Signup successful! Please login.');
+    showLogin();
+}
+
+function login() {
+    const username = document.getElementById('loginUsername').value.trim();
+    const password = document.getElementById('loginPassword').value.trim();
+    const loginError = document.getElementById('loginError');
+
+    if (!username || !password) {
+        loginError.textContent = "Please fill in both fields.";
+        return;
+    }
+
+    const users = JSON.parse(localStorage.getItem('users')) || {};
+    if (users[username] && users[username] === password) {
+        alert('Login successful!');
+        // Store the logged in user in localStorage
+        localStorage.setItem('loggedInUser', username);
+        // Hide the login/signup form and show the game
+        document.getElementById('formContainer').style.display = 'none';
+        document.getElementById('signupContainer').style.display = 'none';
+        document.getElementById('gameContainer').style.display = 'block';
+        loadGameState();
+    } else {
+        loginError.textContent = "Invalid username or password.";
+    }
+}
+
+// Game State Functions
+function saveGameState() {
+    const username = localStorage.getItem('loggedInUser');
+    if (username) {
+        localStorage.setItem(`cookies_${username}`, cookies);
+        localStorage.setItem(`multiplier_${username}`, multiplier);
+        localStorage.setItem(`autoClicks_${username}`, autoClicks);
+        localStorage.setItem(`diamonds_${username}`, diamonds);
+        localStorage.setItem(`dailyQuests_${username}`, JSON.stringify(dailyQuests));
+        localStorage.setItem(`weeklyQuests_${username}`, JSON.stringify(weeklyQuests));
+    }
+}
+
+function loadGameState() {
+    const username = localStorage.getItem('loggedInUser');
+    if (username) {
+        cookies = parseInt(localStorage.getItem(`cookies_${username}`)) || 0;
+        multiplier = parseInt(localStorage.getItem(`multiplier_${username}`)) || 1;
+        autoClicks = parseInt(localStorage.getItem(`autoClicks_${username}`)) || 0;
+        diamonds = parseInt(localStorage.getItem(`diamonds_${username}`)) || 0;
+        dailyQuests = JSON.parse(localStorage.getItem(`dailyQuests_${username}`)) || dailyQuests;
+        weeklyQuests = JSON.parse(localStorage.getItem(`weeklyQuests_${username}`)) || weeklyQuests;
+    }
+    updateStats();
+}
+
+// Game Functions
 let cookies = 0;
 let multiplier = 1;
 let autoClicks = 0;
@@ -19,25 +104,6 @@ let weeklyQuests = [
     { description: "Earn 5000 cookies", reward: 75, completed: false },
     { description: "Earn 100 diamonds", reward: 20, completed: false },
 ];
-
-function saveGameState() {
-    localStorage.setItem('cookies', cookies);
-    localStorage.setItem('multiplier', multiplier);
-    localStorage.setItem('autoClicks', autoClicks);
-    localStorage.setItem('diamonds', diamonds);
-    localStorage.setItem('dailyQuests', JSON.stringify(dailyQuests));
-    localStorage.setItem('weeklyQuests', JSON.stringify(weeklyQuests));
-}
-
-function loadGameState() {
-    cookies = parseInt(localStorage.getItem('cookies')) || 0;
-    multiplier = parseInt(localStorage.getItem('multiplier')) || 1;
-    autoClicks = parseInt(localStorage.getItem('autoClicks')) || 0;
-    diamonds = parseInt(localStorage.getItem('diamonds')) || 0;
-    dailyQuests = JSON.parse(localStorage.getItem('dailyQuests')) || dailyQuests;
-    weeklyQuests = JSON.parse(localStorage.getItem('weeklyQuests')) || weeklyQuests;
-    updateStats();
-}
 
 function updateStats() {
     document.getElementById("cookieCount").innerText = cookies;
@@ -127,8 +193,8 @@ function claimReward() {
     const robloxUsername = document.getElementById('robloxUsername').value;
     const gamepassLink = document.getElementById('gamepassLink').value;
 
-    if (robloxUsername && gamepassLink && diamonds >= 1000) {
-        diamonds -= 1000;
+    if (robloxUsername && gamepassLink && diamonds >= 2500) {
+        diamonds -= 2500;
         updateStats();
 
         // Webhook message
@@ -181,15 +247,24 @@ function loadQuests() {
     const dailyQuestContainer = document.getElementById("dailyQuests");
     const weeklyQuestContainer = document.getElementById("weeklyQuests");
 
+    dailyQuestContainer.innerHTML = '';
+    weeklyQuestContainer.innerHTML = '';
+
     dailyQuests.forEach(quest => {
         const questItem = document.createElement("li");
         questItem.textContent = `${quest.description} - Reward: ${quest.reward} diamonds`;
+        if (quest.completed) {
+            questItem.style.textDecoration = "line-through";
+        }
         dailyQuestContainer.appendChild(questItem);
     });
 
     weeklyQuests.forEach(quest => {
         const questItem = document.createElement("li");
         questItem.textContent = `${quest.description} - Reward: ${quest.reward} diamonds`;
+        if (quest.completed) {
+            questItem.style.textDecoration = "line-through";
+        }
         weeklyQuestContainer.appendChild(questItem);
     });
 }
@@ -240,124 +315,18 @@ function toggleHamburgerMenu() {
         menuContent.style.display = "block";
     }
 }
-function loadQuests() {
-    const dailyQuestContainer = document.getElementById("dailyQuests");
-    const weeklyQuestContainer = document.getElementById("weeklyQuests");
-
-    dailyQuestContainer.innerHTML = '';
-    weeklyQuestContainer.innerHTML = '';
-
-    dailyQuests.forEach(quest => {
-        const questItem = document.createElement("li");
-        questItem.textContent = `${quest.description} - Reward: ${quest.reward} diamonds`;
-        if (quest.completed) {
-            questItem.style.textDecoration = "line-through";
-        }
-        dailyQuestContainer.appendChild(questItem);
-    });
-
-    weeklyQuests.forEach(quest => {
-        const questItem = document.createElement("li");
-        questItem.textContent = `${quest.description} - Reward: ${quest.reward} diamonds`;
-        if (quest.completed) {
-            questItem.style.textDecoration = "line-through";
-        }
-        weeklyQuestContainer.appendChild(questItem);
-    });
-}
-function showSignup() {
-    document.getElementById('formContainer').style.display = 'none';
-    document.getElementById('signupContainer').style.display = 'block';
-}
-
-function showLogin() {
-    document.getElementById('formContainer').style.display = 'block';
-    document.getElementById('signupContainer').style.display = 'none';
-}
-
-function signup() {
-    const username = document.getElementById('signupUsername').value.trim();
-    const password = document.getElementById('signupPassword').value.trim();
-    const signupError = document.getElementById('signupError');
-
-    if (!username || !password) {
-        signupError.textContent = "Please fill in both fields.";
-        return;
-    }
-
-    const users = JSON.parse(localStorage.getItem('users')) || {};
-    if (users[username]) {
-        signupError.textContent = "Username already exists.";
-        return;
-    }
-
-    users[username] = password;
-    localStorage.setItem('users', JSON.stringify(users));
-    alert('Signup successful! Please login.');
-    showLogin();
-}
-
-function login() {
-    const username = document.getElementById('loginUsername').value.trim();
-    const password = document.getElementById('loginPassword').value.trim();
-    const loginError = document.getElementById('loginError');
-
-    if (!username || !password) {
-        loginError.textContent = "Please fill in both fields.";
-        return;
-    }
-
-    const users = JSON.parse(localStorage.getItem('users')) || {};
-    if (users[username] && users[username] === password) {
-        alert('Login successful!');
-        // Store the logged in user in localStorage
-        localStorage.setItem('loggedInUser', username);
-        // Hide the login/signup form and show the game
-        document.getElementById('formContainer').style.display = 'none';
-        document.getElementById('signupContainer').style.display = 'none';
-        document.getElementById('nameInput').style.display = 'block';
-    } else {
-        loginError.textContent =  "Invalid username or password.";
-    }
-}
-function saveGameState() {
-    const username = localStorage.getItem('loggedInUser');
-    if (username) {
-        localStorage.setItem(`cookies_${username}`, cookies);
-        localStorage.setItem(`multiplier_${username}`, multiplier);
-        localStorage.setItem(`autoClicks_${username}`, autoClicks);
-        localStorage.setItem(`diamonds_${username}`, diamonds);
-        localStorage.setItem(`dailyQuests_${username}`, JSON.stringify(dailyQuests));
-        localStorage.setItem(`weeklyQuests_${username}`, JSON.stringify(weeklyQuests));
-    }
-}
-
-function loadGameState() {
-    const username = localStorage.getItem('loggedInUser');
-    if (username) {
-        cookies = parseInt(localStorage.getItem(`cookies_${username}`)) || 0;
-        multiplier = parseInt(localStorage.getItem(`multiplier_${username}`)) || 1;
-        autoClicks = parseInt(localStorage.getItem(`autoClicks_${username}`)) || 0;
-        diamonds = parseInt(localStorage.getItem(`diamonds_${username}`)) || 0;
-        dailyQuests = JSON.parse(localStorage.getItem(`dailyQuests_${username}`)) || dailyQuests;
-        weeklyQuests = JSON.parse(localStorage.getItem(`weeklyQuests_${username}`)) || weeklyQuests;
-    }
-    updateStats();
-}
-window.onload = function() {
-    const username = localStorage.getItem('loggedInUser');
-    if (username) {
-        loadGameState();
-        document.getElementById('nameInput').style.display = 'block';
-    } else {
-        document.getElementById('formContainer').style.display = 'block';
-    }
 
 // Ensure game state is saved every second to avoid data loss
 setInterval(saveGameState, 1000);
 setInterval(autoClick, 1000); // Auto clicks every second
 
 // Load the game state when the page loads
-window.onload = loadGameState;
-
-
+window.onload = function() {
+    const username = localStorage.getItem('loggedInUser');
+    if (username) {
+        loadGameState();
+        document.getElementById('gameContainer').style.display = 'block';
+    } else {
+        document.getElementById('formContainer').style.display = 'block';
+    }
+};

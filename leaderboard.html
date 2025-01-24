@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leaderboard</title>
+    <style>
+        body {
+            font-family: 'Comic Sans MS', sans-serif;
+            text-align: center;
+            background-color: #ffe6f2;
+            color: #ff69b4;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            margin-top: 50px;
+        }
+        .leaderboard {
+            background-color: #fff0f5;
+            border: 2px solid #ff69b4;
+            border-radius: 10px;
+            padding: 20px;
+            display: inline-block;
+        }
+        .leaderboard h2 {
+            margin: 0 0 10px;
+        }
+        .leaderboard ol {
+            padding: 0;
+            list-style: none;
+        }
+        .leaderboard li {
+            margin: 5px 0;
+        }
+        .weekly-rewards {
+            margin-top: 30px;
+            background-color: #fff0f5;
+            border: 2px solid #ff69b4;
+            border-radius: 10px;
+            padding: 20px;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Leaderboard</h1>
+        <div class="leaderboard">
+            <h2>Top Players</h2>
+            <ol id="leaderboardList"></ol>
+        </div>
+        <div class="weekly-rewards">
+            <h2>Weekly Rewards</h2>
+            <p>1st Place: 400 Diamonds</p>
+            <p>2nd Place: 200 Diamonds</p>
+            <p>3rd Place: 100 Diamonds</p>
+            <p>Top 100: 50 Diamonds</p>
+            <p>101 and above: 10 Diamonds</p>
+        </div>
+        <button onclick="goBack()">Go Back</button>
+    </div>
+
+    <script>
+        let leaderboard = JSON.parse(localStorage.getItem("leaderboard")) || [];
+
+        function loadLeaderboard() {
+            const leaderboardList = document.getElementById("leaderboardList");
+            leaderboardList.innerHTML = "";
+            leaderboard.forEach(player => {
+                const listItem = document.createElement("li");
+                listItem.textContent = `${player.name}: ${player.score} cookies`;
+                leaderboardList.appendChild(listItem);
+            });
+        }
+
+        function goBack() {
+            window.location.href = "index.html";
+        }
+
+        window.onload = loadLeaderboard;
+    </script>
+</body>
+</html>

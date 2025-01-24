@@ -151,12 +151,23 @@
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Cookie Clicker</h1>
-        <div id="nameInput">
-            <input type="text" id="playerName" placeholder="Enter your name">
-            <button onclick="startGame()">Start Game</button>
-        </div>
+       <div class="form-container" id="formContainer">
+        <h2>Login</h2>
+        <input type="text" id="loginUsername" placeholder="Username">
+        <input type="password" id="loginPassword" placeholder="Password">
+        <button onclick="login()">Login</button>
+        <p id="loginError" class="error"></p>
+        <p>Don't have an account? <a href="#" onclick="showSignup()">Signup</a></p>
+    </div>
+
+    <div class="form-container" id="signupContainer" style="display: none;">
+        <h2>Signup</h2>
+        <input type="text" id="signupUsername" placeholder="Username">
+        <input type="password" id="signupPassword" placeholder="Password">
+        <button onclick="signup()">Signup</button>
+        <p id="signupError" class="error"></p>
+        <p>Already have an account? <a href="#" onclick="showLogin()">Login</a></p>
+    </div>
         <div id="game" style="display: none;">
             <img id="cookie" src="https://via.placeholder.com/150" alt="Cookie">
             <div class="stats">

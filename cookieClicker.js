@@ -344,7 +344,14 @@ function loadGameState() {
     }
     updateStats();
 }
-
+window.onload = function() {
+    const username = localStorage.getItem('loggedInUser');
+    if (username) {
+        loadGameState();
+        document.getElementById('nameInput').style.display = 'block';
+    } else {
+        document.getElementById('formContainer').style.display = 'block';
+    }
 
 // Ensure game state is saved every second to avoid data loss
 setInterval(saveGameState, 1000);

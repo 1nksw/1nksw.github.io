@@ -148,6 +148,16 @@
         .hamburger-menu-content a:hover {
             text-decoration: underline;
         }
+        .form-container {
+            text-align: center;
+            margin-top: 50px;
+        }
+        input {
+            margin: 10px;
+        }
+        .error {
+            color: red;
+        }
     </style>
 </head>
 <body>
@@ -168,6 +178,13 @@
         <p id="signupError" class="error"></p>
         <p>Already have an account? <a href="#" onclick="showLogin()">Login</a></p>
     </div>
+
+    <div class="container">
+        <h1>Cookie Clicker</h1>
+        <div id="nameInput" style="display: none;">
+            <input type="text" id="playerName" placeholder="Enter your name">
+            <button onclick="startGame()">Start Game</button>
+        </div>
         <div id="game" style="display: none;">
             <img id="cookie" src="https://via.placeholder.com/150" alt="Cookie">
             <div class="stats">
@@ -190,7 +207,7 @@
             <div class="diamond-shop">
                 <h2>Diamond Shop</h2>
                 <div class="shop-item">
-                    <button onclick="claimReward()">Claim Reward (Cost: 1000 Diamonds for 50 Robux)</button>
+                    <button onclick="claimReward()">Claim Reward (Cost: 2500 Diamonds for 50 Robux)</button>
                     <input type="text" id="robloxUsername" placeholder="Enter your Roblox username">
                     <input type="text" id="gamepassLink" placeholder="Enter your Gamepass link">
                 </div>
@@ -213,7 +230,6 @@
             <a href="#">Quests</a>
         </div>
     </div>
-
     <script src="cookieClicker.js"></script>
 </body>
 </html>

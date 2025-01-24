@@ -240,4 +240,11 @@ function toggleHamburgerMenu() {
         menuContent.style.display = "block";
     }
 }
+// Ensure game state is saved every second to avoid data loss
+setInterval(saveGameState, 1000);
+setInterval(autoClick, 1000); // Auto clicks every second
+
+// Load the game state when the page loads
+window.onload = loadGameState;
+
 

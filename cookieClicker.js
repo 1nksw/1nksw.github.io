@@ -6,11 +6,45 @@ let leaderboard = JSON.parse(localStorage.getItem("leaderboard")) || [];
 let dailyStreak = JSON.parse(localStorage.getItem("dailyStreak")) || 0;
 let lastLogin = new Date(localStorage.getItem("lastLogin")) || new Date(0);
 
+let dailyQuests = [
+    { description: "Click the cookie 100 times", reward: 10, completed: false },
+    { description: "Buy 1 Multiplier", reward: 5, completed: false },
+    { description: "Earn 500 cookies", reward: 15, completed: false },
+    { description: "Earn 20 diamonds", reward: 1, completed: false },
+];
+
+let weeklyQuests = [
+    { description: "Click the cookie 1000 times", reward: 50, completed: false },
+    { description: "Buy 5 Multipliers", reward: 25, completed: false },
+    { description: "Earn 5000 cookies", reward: 75, completed: false },
+    { description: "Earn 100 diamonds", reward: 20, completed: false },
+];
+
+function saveGameState() {
+    localStorage.setItem('cookies', cookies);
+    localStorage.setItem('multiplier', multiplier);
+    localStorage.setItem('autoClicks', autoClicks);
+    localStorage.setItem('diamonds', diamonds);
+    localStorage.setItem('dailyQuests', JSON.stringify(dailyQuests));
+    localStorage.setItem('weeklyQuests', JSON.stringify(weeklyQuests));
+}
+
+function loadGameState() {
+    cookies = parseInt(localStorage.getItem('cookies')) || 0;
+    multiplier = parseInt(localStorage.getItem('multiplier')) || 1;
+    autoClicks = parseInt(localStorage.getItem('autoClicks')) || 0;
+    diamonds = parseInt(localStorage.getItem('diamonds')) || 0;
+    dailyQuests = JSON.parse(localStorage.getItem('dailyQuests')) || dailyQuests;
+    weeklyQuests = JSON.parse(localStorage.getItem('weeklyQuests')) || weeklyQuests;
+    updateStats();
+}
+
 function updateStats() {
     document.getElementById("cookieCount").innerText = cookies;
     document.getElementById("multiplier").innerText = multiplier;
     document.getElementById("autoClicks").innerText = autoClicks;
     document.getElementById("diamondCount").innerText = diamonds;
+    saveGameState();
 }
 
 function startGame() {
@@ -23,19 +57,21 @@ function startGame() {
     document.getElementById("nameInput").style.display = "none";
     document.getElementById("game").style.display = "block";
     dailyLogin();
-    updateStats();
+    loadGameState();
     updateLeaderboard();
+    loadQuests();
 }
 
 document.getElementById("cookie").addEventListener("click", function () {
     cookies += multiplier;
     updateStats();
     updateLeaderboard();
+    checkQuests();
 });
 
 function buyMultiplier() {
     const messageElement = document.getElementById("multiplierMessage");
-    const multiplierCost = document.getElementById("multiplierCost").innerText;
+    const multiplierCost = parseInt(document.getElementById("multiplierCost").innerText);
     if (cookies >= multiplierCost) {
         cookies -= multiplierCost;
         multiplier++;
@@ -43,6 +79,7 @@ function buyMultiplier() {
         messageElement.textContent = "";
         updateStats();
         updateLeaderboard();
+        checkQuests();
     } else {
         messageElement.textContent = `You need ${multiplierCost - cookies} more cookies to buy a multiplier!`;
     }
@@ -50,7 +87,7 @@ function buyMultiplier() {
 
 function buyAutoClicker() {
     const messageElement = document.getElementById("autoClickerMessage");
-    const autoClickerCost = document.getElementById("autoClickerCost").innerText;
+    const autoClickerCost = parseInt(document.getElementById("autoClickerCost").innerText);
     if (cookies >= autoClickerCost) {
         cookies -= autoClickerCost;
         autoClicks++;
@@ -140,6 +177,61 @@ function updateLeaderboard() {
     }
 }
 
+function loadQuests() {
+    const dailyQuestContainer = document.getElementById("dailyQuests");
+    const weeklyQuestContainer = document.getElementById("weeklyQuests");
+
+    dailyQuests.forEach(quest => {
+        const questItem = document.createElement("li");
+        questItem.textContent = `${quest.description} - Reward: ${quest.reward} diamonds`;
+        dailyQuestContainer.appendChild(questItem);
+    });
+
+    weeklyQuests.forEach(quest => {
+        const questItem = document.createElement("li");
+        questItem.textContent = `${quest.description} - Reward: ${quest.reward} diamonds`;
+        weeklyQuestContainer.appendChild(questItem);
+    });
+}
+
+function checkQuests() {
+    dailyQuests.forEach(quest => {
+        if (!quest.completed && checkQuestCondition(quest.description)) {
+            quest.completed = true;
+            diamonds += quest.reward;
+            alert(`Daily Quest Completed: ${quest.description}! You've earned ${quest.reward} diamonds!`);
+            updateStats();
+        }
+    });
+
+    weeklyQuests.forEach(quest => {
+        if (!quest.completed && checkQuestCondition(quest.description)) {
+            quest.completed = true;
+            diamonds += quest.reward;
+            alert(`Weekly Quest Completed: ${quest.description}! You've earned ${quest.reward} diamonds!`);
+            updateStats();
+        }
+    });
+}
+
+function checkQuestCondition(description) {
+    if (description.includes("Click the cookie")) {
+        const times = parseInt(description.match(/\d+/)[0]);
+        return cookies >= times;
+    }
+    if (description.includes("Buy")) {
+        const times = parseInt(description.match(/\d+/)[0]);
+        if (description.includes("Multiplier")) {
+            return multiplier >= times;
+        }
+    }
+    if (description.includes("Earn")) {
+        const amount = parseInt(description.match(/\d+/)[0]);
+        return cookies >= amount;
+    }
+    return false;
+}
+
 function toggleHamburgerMenu() {
     const menuContent = document.querySelector(".hamburger-menu-content");
     if (menuContent.style.display === "block") {
@@ -149,4 +241,3 @@ function toggleHamburgerMenu() {
     }
 }
 
-setInterval(autoClick, 1000); // Auto clicks every second

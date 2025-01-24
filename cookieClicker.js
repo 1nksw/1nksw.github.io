@@ -315,9 +315,9 @@ function login() {
         // Hide the login/signup form and show the game
         document.getElementById('formContainer').style.display = 'none';
         document.getElementById('signupContainer').style.display = 'none';
-        document.getElementById('game').style.display = 'block';
+        document.getElementById('nameInput').style.display = 'block';
     } else {
-        loginError.textContent = "Invalid username or password.";
+        loginError.textContent =  "Invalid username or password.";
     }
 }
 function saveGameState() {

@@ -44,9 +44,7 @@ function login() {
     const users = JSON.parse(localStorage.getItem('users')) || {};
     if (users[username] && users[username] === password) {
         alert('Login successful!');
-        // Store the logged in user in localStorage
         localStorage.setItem('loggedInUser', username);
-        // Hide the login/signup form and show the game
         document.getElementById('formContainer').style.display = 'none';
         document.getElementById('signupContainer').style.display = 'none';
         document.getElementById('gameContainer').style.display = 'block';

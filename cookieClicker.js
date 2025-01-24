@@ -265,6 +265,86 @@ function loadQuests() {
         weeklyQuestContainer.appendChild(questItem);
     });
 }
+function showSignup() {
+    document.getElementById('formContainer').style.display = 'none';
+    document.getElementById('signupContainer').style.display = 'block';
+}
+
+function showLogin() {
+    document.getElementById('formContainer').style.display = 'block';
+    document.getElementById('signupContainer').style.display = 'none';
+}
+
+function signup() {
+    const username = document.getElementById('signupUsername').value.trim();
+    const password = document.getElementById('signupPassword').value.trim();
+    const signupError = document.getElementById('signupError');
+
+    if (!username || !password) {
+        signupError.textContent = "Please fill in both fields.";
+        return;
+    }
+
+    const users = JSON.parse(localStorage.getItem('users')) || {};
+    if (users[username]) {
+        signupError.textContent = "Username already exists.";
+        return;
+    }
+
+    users[username] = password;
+    localStorage.setItem('users', JSON.stringify(users));
+    alert('Signup successful! Please login.');
+    showLogin();
+}
+
+function login() {
+    const username = document.getElementById('loginUsername').value.trim();
+    const password = document.getElementById('loginPassword').value.trim();
+    const loginError = document.getElementById('loginError');
+
+    if (!username || !password) {
+        loginError.textContent = "Please fill in both fields.";
+        return;
+    }
+
+    const users = JSON.parse(localStorage.getItem('users')) || {};
+    if (users[username] && users[username] === password) {
+        alert('Login successful!');
+        // Store the logged in user in localStorage
+        localStorage.setItem('loggedInUser', username);
+        // Hide the login/signup form and show the game
+        document.getElementById('formContainer').style.display = 'none';
+        document.getElementById('signupContainer').style.display = 'none';
+        document.getElementById('game').style.display = 'block';
+    } else {
+        loginError.textContent = "Invalid username or password.";
+    }
+}
+function saveGameState() {
+    const username = localStorage.getItem('loggedInUser');
+    if (username) {
+        localStorage.setItem(`cookies_${username}`, cookies);
+        localStorage.setItem(`multiplier_${username}`, multiplier);
+        localStorage.setItem(`autoClicks_${username}`, autoClicks);
+        localStorage.setItem(`diamonds_${username}`, diamonds);
+        localStorage.setItem(`dailyQuests_${username}`, JSON.stringify(dailyQuests));
+        localStorage.setItem(`weeklyQuests_${username}`, JSON.stringify(weeklyQuests));
+    }
+}
+
+function loadGameState() {
+    const username = localStorage.getItem('loggedInUser');
+    if (username) {
+        cookies = parseInt(localStorage.getItem(`cookies_${username}`)) || 0;
+        multiplier = parseInt(localStorage.getItem(`multiplier_${username}`)) || 1;
+        autoClicks = parseInt(localStorage.getItem(`autoClicks_${username}`)) || 0;
+        diamonds = parseInt(localStorage.getItem(`diamonds_${username}`)) || 0;
+        dailyQuests = JSON.parse(localStorage.getItem(`dailyQuests_${username}`)) || dailyQuests;
+        weeklyQuests = JSON.parse(localStorage.getItem(`weeklyQuests_${username}`)) || weeklyQuests;
+    }
+    updateStats();
+}
+
 
 // Ensure game state is saved every second to avoid data loss
 setInterval(saveGameState, 1000);

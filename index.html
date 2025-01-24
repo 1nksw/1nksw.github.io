@@ -5,7 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cookie Clicker Game</title>
     <style>
-        /* Existing and updated styles */
+        /* Add your existing styles here */
+        .form-container {
+            text-align: center;
+            margin-top: 50px;
+        }
+        input {
+            margin: 10px;
+        }
+        .error {
+            color: red;
+        }
+
         body {
             font-family: 'Comic Sans MS', sans-serif;
             text-align: center;
@@ -56,21 +67,6 @@
             background-color: #ff85c2;
         }
 
-        #nameInput {
-            margin: 20px 0;
-        }
-
-        .error {
-            color: red;
-            font-size: 0.9em;
-            margin-top: 10px;
-        }
-
-        .message {
-            color: red;
-            font-size: 1em;
-        }
-
         .leaderboard {
             margin-top: 30px;
             background-color: #fff0f5;
@@ -91,15 +87,6 @@
 
         .leaderboard li {
             margin: 5px 0;
-        }
-
-        /* New Styles for Diamond Shop */
-        .diamond-shop {
-            background-color: #fff0f5;
-            border: 2px solid #ff69b4;
-            border-radius: 10px;
-            padding: 20px;
-            margin: 20px 0;
         }
 
         /* Quest Styles */
@@ -148,16 +135,6 @@
         .hamburger-menu-content a:hover {
             text-decoration: underline;
         }
-        .form-container {
-            text-align: center;
-            margin-top: 50px;
-        }
-        input {
-            margin: 10px;
-        }
-        .error {
-            color: red;
-        }
     </style>
 </head>
 <body>
@@ -179,7 +156,7 @@
         <p>Already have an account? <a href="#" onclick="showLogin()">Login</a></p>
     </div>
 
-    <div class="container">
+    <div class="container" id="gameContainer" style="display: none;">
         <h1>Cookie Clicker</h1>
         <div id="nameInput" style="display: none;">
             <input type="text" id="playerName" placeholder="Enter your name">
@@ -230,6 +207,7 @@
             <a href="#">Quests</a>
         </div>
     </div>
+
     <script src="cookieClicker.js"></script>
 </body>
 </html>

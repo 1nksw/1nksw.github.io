@@ -30,7 +30,6 @@ function signup() {
     alert('Signup successful! Please login.');
     showLogin();
 }
-
 function login() {
     const username = document.getElementById('loginUsername').value.trim();
     const password = document.getElementById('loginPassword').value.trim();
@@ -48,13 +47,11 @@ function login() {
         document.getElementById('formContainer').style.display = 'none';
         document.getElementById('signupContainer').style.display = 'none';
         document.getElementById('gameContainer').style.display = 'block';
-        loadGameState();
+        startGame();
     } else {
         loginError.textContent = "Invalid username or password.";
     }
 }
-
-// Game State Functions
 function saveGameState() {
     const username = localStorage.getItem('loggedInUser');
     if (username) {
@@ -79,8 +76,7 @@ function loadGameState() {
     }
     updateStats();
 }
-
-// Game Functions
+// Core Game Functions
 let cookies = 0;
 let multiplier = 1;
 let autoClicks = 0;
@@ -88,20 +84,6 @@ let diamonds = 0;
 let leaderboard = JSON.parse(localStorage.getItem("leaderboard")) || [];
 let dailyStreak = JSON.parse(localStorage.getItem("dailyStreak")) || 0;
 let lastLogin = new Date(localStorage.getItem("lastLogin")) || new Date(0);
-
-let dailyQuests = [
-    { description: "Click the cookie 100 times", reward: 10, completed: false },
-    { description: "Buy 1 Multiplier", reward: 5, completed: false },
-    { description: "Earn 500 cookies", reward: 15, completed: false },
-    { description: "Earn 20 diamonds", reward: 1, completed: false },
-];
-
-let weeklyQuests = [
-    { description: "Click the cookie 1000 times", reward: 50, completed: false },
-    { description: "Buy 5 Multipliers", reward: 25, completed: false },
-    { description: "Earn 5000 cookies", reward: 75, completed: false },
-    { description: "Earn 100 diamonds", reward: 20, completed: false },
-];
 
 function updateStats() {
     document.getElementById("cookieCount").innerText = cookies;
@@ -112,18 +94,11 @@ function updateStats() {
 }
 
 function startGame() {
-    const playerName = document.getElementById("playerName").value.trim();
-    if (!playerName) {
-        alert("Please enter a name to start the game.");
-        return;
-    }
-    localStorage.setItem("playerName", playerName);
-    document.getElementById("nameInput").style.display = "none";
-    document.getElementById("game").style.display = "block";
     dailyLogin();
     loadGameState();
     updateLeaderboard();
     loadQuests();
+    document.getElementById("game").style.display = "block";
 }
 
 document.getElementById("cookie").addEventListener("click", function () {
@@ -132,7 +107,6 @@ document.getElementById("cookie").addEventListener("click", function () {
     updateLeaderboard();
     checkQuests();
 });
-
 function buyMultiplier() {
     const messageElement = document.getElementById("multiplierMessage");
     const multiplierCost = parseInt(document.getElementById("multiplierCost").innerText);
@@ -148,7 +122,6 @@ function buyMultiplier() {
         messageElement.textContent = `You need ${multiplierCost - cookies} more cookies to buy a multiplier!`;
     }
 }
-
 function buyAutoClicker() {
     const messageElement = document.getElementById("autoClickerMessage");
     const autoClickerCost = parseInt(document.getElementById("autoClickerCost").innerText);
@@ -163,13 +136,11 @@ function buyAutoClicker() {
         messageElement.textContent = `You need ${autoClickerCost - cookies} more cookies to buy an auto clicker!`;
     }
 }
-
 function autoClick() {
-    cookies += autoClicks * 0.1;
+    cookies += autoClicks * 1;
     updateStats();
     updateLeaderboard();
 }
-
 function dailyLogin() {
     const now = new Date();
     const timeDiff = now - lastLogin;
@@ -186,7 +157,6 @@ function dailyLogin() {
         updateStats();
     }
 }
-
 function claimReward() {
     const robloxUsername = document.getElementById('robloxUsername').value;
     const gamepassLink = document.getElementById('gamepassLink').value;
@@ -195,14 +165,13 @@ function claimReward() {
         diamonds -= 2500;
         updateStats();
 
-        // Webhook message
         const webhookUrl = 'YOUR_DISCORD_WEBHOOK_URL';
         const message = {
             content: `${robloxUsername} has claimed a reward!`,
             embeds: [{
                 title: "Reward Claimed",
                 description: `Roblox Username: ${robloxUsername}\nGamepass Link: ${gamepassLink}`,
-                color: 65280  // green color
+                color: 65280
             }]
         };
 
@@ -216,7 +185,6 @@ function claimReward() {
         alert('Please enter valid information and ensure you have enough diamonds.');
     }
 }
-
 function updateLeaderboard() {
     const playerName = localStorage.getItem("playerName");
     const playerIndex = leaderboard.findIndex(player => player.name === playerName);
@@ -239,8 +207,6 @@ function updateLeaderboard() {
             leaderboardList.appendChild(listItem);
         });
     }
-}
-
 function loadQuests() {
     const dailyQuestContainer = document.getElementById("dailyQuests");
     const weeklyQuestContainer = document.getElementById("weeklyQuests");

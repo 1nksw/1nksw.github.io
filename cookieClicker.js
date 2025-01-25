@@ -294,3 +294,33 @@ window.onload = function() {
         document.getElementById('formContainer').style.display = 'block';
     }
 };
+function sendWebhookForRole(roleName) {
+    const webhookUrl = 'YOUR_DISCORD_WEBHOOK_URL';
+    const username = localStorage.getItem('loggedInUser');
+    const message = {
+        content: `${username} has purchased an item and requested the role: ${roleName}`,
+        embeds: [{
+            title: "Role Request",
+            description: `User: ${username}\nRequested Role: ${roleName}`,
+            color: 65280 // green color
+        }]
+    };
+
+    fetch(webhookUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(message)
+    }).then(response => console.log('Webhook message sent'))
+    .catch(error => console.error('Error sending webhook message:', error));
+}
+
+function buyShopItem(itemName, cost, roleName) {
+    if (cookies >= cost) {
+        cookies -= cost;
+        updateStats();
+        sendWebhookForRole(roleName);
+        alert(`You have purchased ${itemName} and requested the role: ${roleName}`);
+    } else {
+        alert(`You need ${cost - cookies} more cookies to buy ${itemName}!`);
+    }
+}

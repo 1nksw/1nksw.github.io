@@ -30,6 +30,7 @@ function signup() {
     alert('Signup successful! Please login.');
     showLogin();
 }
+
 function login() {
     const username = document.getElementById('loginUsername').value.trim();
     const password = document.getElementById('loginPassword').value.trim();

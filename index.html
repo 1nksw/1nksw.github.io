@@ -163,14 +163,25 @@
                 <p>Auto Clicks: <span id="autoClicks">0</span></p>
                 <p>Diamonds: <span id="diamondCount">0</span></p>
             </div>
+            <div class="upgrades">
+                <h2>Upgrades</h2>
+                <div class="upgrade-item">
+                    <button onclick="buyMultiplier()">Buy Multiplier (Cost: <span id="multiplierCost">10</span> Cookies)</button>
+                    <div id="multiplierMessage" class="message"></div>
+                </div>
+                <div class="upgrade-item">
+                    <button onclick="buyAutoClicker()">Buy Auto Clicker (Cost: <span id="autoClickerCost">100</span> Cookies)</button>
+                    <div id="autoClickerMessage" class="message"></div>
+                </div>
+            </div>
             <div class="shop">
                 <h2>Shop</h2>
                 <div class="shop-item">
-                    <button onclick="buyShopItem('Golden Cookie', 1000, 'Golden Cookie Role')">Buy Golden Cookie (Cost: 1000 Cookies)</button>
+                    <button onclick="buyShopItem('Golden Cookie', 1000000, 'Golden Cookie Role')">Buy Super Cool Cat Lover Role (Cost: 1M Cookies)</button>
                     <div id="goldenCookieMessage" class="message"></div>
                 </div>
                 <div class="shop-item">
-                    <button onclick="buyShopItem('Diamond Clicker', 5000, 'Diamond Clicker Role')">Buy Diamond Clicker (Cost: 5000 Cookies)</button>
+                    <button onclick="buyShopItem('Diamond Clicker', 100000, 'Diamond Clicker Role')">Buy Cool Cat lover (Cost: 100K Cookies)</button>
                     <div id="diamondClickerMessage" class="message"></div>
                 </div>
             </div>
@@ -190,16 +201,5 @@
             </div>
         </div>
     </div>
-
-    <div class="hamburger-menu">
-        <button onclick="toggleHamburgerMenu()">☰</button>
-        <div class="hamburger-menu-content">
-            <a href="leaderboard.html">Leaderboard</a>
-            <a href="#">Shop</a>
-            <a href="#">Quests</a>
-        </div>
-    </div>
-
-    <script src="cookieClicker.js"></script>
 </body>
-</html>
+</html>    

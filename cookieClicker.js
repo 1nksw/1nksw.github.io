@@ -78,7 +78,7 @@ function loadGameState() {
     }
     updateStats();
 }
-// Core Game Functions
+
 let cookies = 0;
 let multiplier = 1;
 let autoClicks = 0;
@@ -126,6 +126,7 @@ function buyMultiplier() {
         messageElement.textContent = `You need ${multiplierCost - cookies} more cookies to buy a multiplier!`;
     }
 }
+
 function buyAutoClicker() {
     const messageElement = document.getElementById("autoClickerMessage");
     const autoClickerCost = parseInt(document.getElementById("autoClickerCost").innerText);
@@ -140,11 +141,18 @@ function buyAutoClicker() {
         messageElement.textContent = `You need ${autoClickerCost - cookies} more cookies to buy an auto clicker!`;
     }
 }
+
 function autoClick() {
     cookies += autoClicks * 1;
     updateStats();
     updateLeaderboard();
 }
+function autoClick() {
+    cookies += autoClicks * 0.1;
+    updateStats();
+    updateLeaderboard();
+}
+
 function dailyLogin() {
     const now = new Date();
     const timeDiff = now - lastLogin;
@@ -161,6 +169,7 @@ function dailyLogin() {
         updateStats();
     }
 }
+
 function claimReward() {
     const robloxUsername = document.getElementById('robloxUsername').value;
     const gamepassLink = document.getElementById('gamepassLink').value;
@@ -189,28 +198,7 @@ function claimReward() {
         alert('Please enter valid information and ensure you have enough diamonds.');
     }
 }
-function updateLeaderboard() {
-    const playerName = localStorage.getItem("playerName");
-    const playerIndex = leaderboard.findIndex(player => player.name === playerName);
 
-    if (playerIndex > -1) {
-        leaderboard[playerIndex].score = Math.floor(cookies);
-    } else {
-        leaderboard.push({ name: playerName, score: Math.floor(cookies) });
-    }
-
-    leaderboard.sort((a, b) => b.score - a.score);
-    localStorage.setItem("leaderboard", JSON.stringify(leaderboard));
-
-    const leaderboardList = document.getElementById("leaderboardList");
-    if (leaderboardList) {
-        leaderboardList.innerHTML = "";
-        leaderboard.forEach(player => {
-            const listItem = document.createElement("li");
-            listItem.textContent = `${player.name}: ${player.score} cookies`;
-            leaderboardList.appendChild(listItem);
-        });
-    }
 function loadQuests() {
     const dailyQuestContainer = document.getElementById("dailyQuests");
     const weeklyQuestContainer = document.getElementById("weeklyQuests");
@@ -284,20 +272,17 @@ function toggleHamburgerMenu() {
     }
 }
 
-// Ensure game state is saved every second to avoid data loss
-setInterval(saveGameState, 1000);
-setInterval(autoClick, 1000); // Auto clicks every second
-
-// Load the game state when the page loads
-window.onload = function() {
-    const username = localStorage.getItem('loggedInUser');
-    if (username) {
-        loadGameState();
-        document.getElementById('gameContainer').style.display = 'block';
+function buyShopItem(itemName, cost, roleName) {
+    if (cookies >= cost) {
+        cookies -= cost;
+        updateStats();
+        sendWebhookForRole(roleName);
+        alert(`Purchased ${itemName}! Join the Roblox Group.`);
     } else {
-        document.getElementById('formContainer').style.display = 'block';
+        alert(`You need ${cost - cookies} more cookies to buy ${itemName}!`);
     }
-};
+}
+
 function sendWebhookForRole(roleName) {
     const webhookUrl = 'YOUR_DISCORD_WEBHOOK_URL';
     const username = localStorage.getItem('loggedInUser');
@@ -318,14 +303,17 @@ function sendWebhookForRole(roleName) {
     .catch(error => console.error('Error sending webhook message:', error));
 }
 
-function buyShopItem(itemName, cost, roleName) {
-    if (cookies >= cost) {
-        cookies -= cost;
-        updateStats();
-        sendWebhookForRole(roleName);
-        alert(`You have purchased ${itemName} and requested the role: ${roleName}`);
+// Ensure game state is saved every second to avoid data loss
+setInterval(saveGameState, 1000);
+setInterval(autoClick, 1000); // Auto clicks every second
+
+// Load the game state when the page loads
+window.onload = function() {
+    const username = localStorage.getItem('loggedInUser');
+    if (username) {
+        loadGameState();
+        document.getElementById('gameContainer').style.display = 'block';
     } else {
-        alert(`You need ${cost - cookies} more cookies to buy ${itemName}!`);
+        document.getElementById('formContainer').style.display = 'block';
     }
-}
-}
+};

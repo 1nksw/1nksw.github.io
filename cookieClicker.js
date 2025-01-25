@@ -48,11 +48,12 @@ function login() {
         document.getElementById('formContainer').style.display = 'none';
         document.getElementById('signupContainer').style.display = 'none';
         document.getElementById('gameContainer').style.display = 'block';
-        startGame();
+        startGame(username);
     } else {
         loginError.textContent = "Invalid username or password.";
     }
 }
+
 function saveGameState() {
     const username = localStorage.getItem('loggedInUser');
     if (username) {
@@ -94,12 +95,14 @@ function updateStats() {
     saveGameState();
 }
 
-function startGame() {
+function startGame(username) {
     dailyLogin();
     loadGameState();
     updateLeaderboard();
     loadQuests();
     document.getElementById("game").style.display = "block";
+    localStorage.setItem("playerName", username); // Use the username as the player name
+    updateStats(); // Ensure stats are updated
 }
 
 document.getElementById("cookie").addEventListener("click", function () {

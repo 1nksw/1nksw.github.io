@@ -325,3 +325,4 @@ function buyShopItem(itemName, cost, roleName) {
         alert(`You need ${cost - cookies} more cookies to buy ${itemName}!`);
     }
 }
+}
